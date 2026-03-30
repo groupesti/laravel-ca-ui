@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CA Admin UI - Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+        .sidebar a.active { background: #1e40af; color: #fff; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .chain-line { border-left: 2px solid #93c5fd; margin-left: 1rem; padding-left: 1rem; }
+    </style>
+</head>
+<body class="bg-gray-100">
+<div class="flex min-h-screen">
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <nav class="w-64 bg-gray-900 text-gray-300 flex flex-col flex-shrink-0">
+        <div class="px-6 py-5 border-b border-gray-700">
+            <h1 class="text-white font-bold text-lg flex items-center gap-2">
+                <i class="bi bi-shield-lock text-blue-400"></i> CA Admin
+            </h1>
+            <p class="text-xs text-gray-500 mt-1">Certificate Authority Manager</p>
+        </div>
+        <div class="flex-1 py-4 space-y-1 px-3">
+            <a href="#" onclick="showPage('dashboard')" id="nav-dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-800 hover:text-white transition active">
+                <i class="bi bi-speedometer2"></i> Tableau de bord
+            </a>
+            <a href="#" onclick="showPage('authorities')" id="nav-authorities" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-800 hover:text-white transition">
+                <i class="bi bi-building"></i> Autorites CA
+            </a>
+            <a href="#" onclick="showPage('certificates')" id="nav-certificates" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-800 hover:text-white transition">
+                <i class="bi bi-file-earmark-lock"></i> Certificats
+            </a>
+            <a href="#" onclick="showPage('keys')" id="nav-keys" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-800 hover:text-white transition">
+                <i class="bi bi-key"></i> Cles
+            </a>
+            <a href="#" onclick="showPage('csrs')" id="nav-csrs" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-800 hover:text-white transition">
+                <i class="bi bi-file-earmark-text"></i> Demandes (CSR)
+            </a>
+            <a href="#" onclick="showPage('crls')" id="nav-crls" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-800 hover:text-white transition">
+                <i class="bi bi-file-earmark-x"></i> Listes de revocation
+            </a>
+            <a href="#" onclick="showPage('audit')" id="nav-audit" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-800 hover:text-white transition">
+                <i class="bi bi-journal-text"></i> Journal d'audit
+            </a>
+        </div>
+        <div class="px-3 py-4 border-t border-gray-700">
+            <div class="flex items-center gap-3 px-3">
+                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">A</div>
+                <div>
+                    <p class="text-sm text-white">Admin</p>
+                    <p class="text-xs text-gray-500">admin@groupesti.com</p>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="flex-1 overflow-auto">
+
+        <!-- ==================== DASHBOARD ==================== -->
+        <div id="page-dashboard" class="page-section active fade-in">
+            <div class="bg-white border-b px-8 py-5">
+                <h2 class="text-2xl font-bold text-gray-800">Tableau de bord</h2>
+                <p class="text-sm text-gray-500 mt-1">Vue d'ensemble de votre infrastructure PKI</p>
+            </div>
+            <div class="p-8">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm text-gray-500">Autorites CA</p>
+                                <p class="text-3xl font-bold text-gray-800 mt-1">4</p>
+                                <p class="text-xs text-green-600 mt-2"><i class="bi bi-arrow-up"></i> 1 Root, 3 Intermediate</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="bi bi-building text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm text-gray-500">Certificats actifs</p>
+                                <p class="text-3xl font-bold text-gray-800 mt-1">247</p>
+                                <p class="text-xs text-green-600 mt-2"><i class="bi bi-check-circle"></i> 12 emis ce mois</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="bi bi-file-earmark-lock text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-yellow-500">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm text-gray-500">CSR en attente</p>
+                                <p class="text-3xl font-bold text-gray-800 mt-1">8</p>
+                                <p class="text-xs text-yellow-600 mt-2"><i class="bi bi-clock"></i> 3 depuis plus de 48h</p>
+                            </div>
+                            <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                <i class="bi bi-file-earmark-text text-yellow-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-red-500">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm text-gray-500">Expiration proche</p>
+                                <p class="text-3xl font-bold text-gray-800 mt-1">5</p>
+                                <p class="text-xs text-red-600 mt-2"><i class="bi bi-exclamation-triangle"></i> Dans les 30 prochains jours</p>
+                            </div>
+                            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                <i class="bi bi-alarm text-red-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="font-semibold text-gray-800 mb-4"><i class="bi bi-lightning"></i> Actions rapides</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button class="flex items-center gap-2 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition text-sm">
+                                <i class="bi bi-plus-circle"></i> Creer une CA
+                            </button>
+                            <button class="flex items-center gap-2 px-4 py-3 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition text-sm">
+                                <i class="bi bi-file-earmark-plus"></i> Emettre un certificat
+                            </button>
+                            <button class="flex items-center gap-2 px-4 py-3 bg-yellow-50 text-yellow-700 rounded-lg hover:bg-yellow-100 transition text-sm">
+                                <i class="bi bi-key-fill"></i> Generer une cle
+                            </button>
+                            <button class="flex items-center gap-2 px-4 py-3 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition text-sm">
+                                <i class="bi bi-file-earmark-x"></i> Generer une CRL
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Certificate Summary -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="font-semibold text-gray-800 mb-4"><i class="bi bi-pie-chart"></i> Repartition des certificats</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Serveur TLS</span>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-48 h-2 bg-gray-200 rounded-full"><div class="h-2 bg-blue-500 rounded-full" style="width:60%"></div></div>
+                                    <span class="text-sm font-medium">148</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Client mTLS</span>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-48 h-2 bg-gray-200 rounded-full"><div class="h-2 bg-green-500 rounded-full" style="width:25%"></div></div>
+                                    <span class="text-sm font-medium">62</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">S/MIME</span>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-48 h-2 bg-gray-200 rounded-full"><div class="h-2 bg-purple-500 rounded-full" style="width:10%"></div></div>
+                                    <span class="text-sm font-medium">25</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Code Signing</span>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-48 h-2 bg-gray-200 rounded-full"><div class="h-2 bg-orange-500 rounded-full" style="width:5%"></div></div>
+                                    <span class="text-sm font-medium">12</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expiring Certificates -->
+                <div class="bg-white rounded-xl shadow-sm mb-8">
+                    <div class="px-6 py-4 border-b flex justify-between items-center">
+                        <h3 class="font-semibold text-gray-800"><i class="bi bi-exclamation-triangle text-yellow-500"></i> Certificats expirant bientot</h3>
+                        <span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">30 prochains jours</span>
+                    </div>
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-gray-500 font-medium">Sujet (CN)</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Type</th><th class="px-6 py-3 text-left text-gray-500 font-medium">CA emettrice</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Expiration</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Jours restants</th></tr></thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3 font-medium">api.example.com</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">TLS Server</span></td><td class="px-6 py-3 text-gray-500">Intermediate CA 1</td><td class="px-6 py-3">2026-04-05</td><td class="px-6 py-3"><span class="text-red-600 font-medium">7 jours</span></td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3 font-medium">*.internal.corp</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">TLS Server</span></td><td class="px-6 py-3 text-gray-500">Intermediate CA 2</td><td class="px-6 py-3">2026-04-12</td><td class="px-6 py-3"><span class="text-yellow-600 font-medium">14 jours</span></td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3 font-medium">alice@example.com</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs">S/MIME</span></td><td class="px-6 py-3 text-gray-500">Intermediate CA 1</td><td class="px-6 py-3">2026-04-18</td><td class="px-6 py-3"><span class="text-yellow-600 font-medium">20 jours</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-xl shadow-sm">
+                    <div class="px-6 py-4 border-b">
+                        <h3 class="font-semibold text-gray-800"><i class="bi bi-clock-history"></i> Activite recente</h3>
+                    </div>
+                    <div class="divide-y divide-gray-100">
+                        <div class="px-6 py-3 flex items-center gap-4 hover:bg-gray-50">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center"><i class="bi bi-plus text-green-600"></i></div>
+                            <div class="flex-1"><p class="text-sm">Certificat emis pour <strong>webapp.corp.local</strong></p><p class="text-xs text-gray-400">Il y a 2 heures par admin</p></div>
+                        </div>
+                        <div class="px-6 py-3 flex items-center gap-4 hover:bg-gray-50">
+                            <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center"><i class="bi bi-x text-red-600"></i></div>
+                            <div class="flex-1"><p class="text-sm">Certificat revoque: <strong>old-server.internal</strong> (key compromise)</p><p class="text-xs text-gray-400">Il y a 5 heures par admin</p></div>
+                        </div>
+                        <div class="px-6 py-3 flex items-center gap-4 hover:bg-gray-50">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center"><i class="bi bi-check text-blue-600"></i></div>
+                            <div class="flex-1"><p class="text-sm">CSR approuve pour <strong>mail.example.com</strong></p><p class="text-xs text-gray-400">Il y a 1 jour par admin</p></div>
+                        </div>
+                        <div class="px-6 py-3 flex items-center gap-4 hover:bg-gray-50">
+                            <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center"><i class="bi bi-file-earmark text-yellow-600"></i></div>
+                            <div class="flex-1"><p class="text-sm">CRL generee pour <strong>Intermediate CA 1</strong> (3 entrees)</p><p class="text-xs text-gray-400">Il y a 1 jour par systeme</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== AUTHORITIES ==================== -->
+        <div id="page-authorities" class="page-section fade-in">
+            <div class="bg-white border-b px-8 py-5 flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Autorites de certification</h2>
+                    <p class="text-sm text-gray-500 mt-1">Hierarchie PKI et gestion des CA</p>
+                </div>
+                <button onclick="showPage('ca-create')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm flex items-center gap-2">
+                    <i class="bi bi-plus-circle"></i> Nouvelle CA
+                </button>
+            </div>
+            <div class="p-8">
+                <!-- CA Tree -->
+                <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                    <h3 class="font-semibold text-gray-800 mb-4"><i class="bi bi-diagram-3"></i> Hierarchie</h3>
+                    <div class="ml-2">
+                        <!-- Root CA -->
+                        <div class="flex items-center gap-3 py-2">
+                            <i class="bi bi-shield-fill-check text-blue-600 text-lg"></i>
+                            <div>
+                                <a href="#" onclick="showPage('ca-detail')" class="font-semibold text-blue-600 hover:underline">Groupe STI Root CA</a>
+                                <span class="ml-2 px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">Active</span>
+                                <p class="text-xs text-gray-400">RSA-4096 | SHA-256 | Expire: 2035-01-01</p>
+                            </div>
+                        </div>
+                        <!-- Intermediate 1 -->
+                        <div class="chain-line">
+                            <div class="flex items-center gap-3 py-2">
+                                <i class="bi bi-shield-check text-indigo-500"></i>
+                                <div>
+                                    <a href="#" class="font-medium text-indigo-600 hover:underline">Intermediate CA - TLS</a>
+                                    <span class="ml-2 px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">Active</span>
+                                    <p class="text-xs text-gray-400">ECDSA P-384 | SHA-384 | Expire: 2030-06-15 | 185 certificats</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Intermediate 2 -->
+                        <div class="chain-line">
+                            <div class="flex items-center gap-3 py-2">
+                                <i class="bi bi-shield-check text-indigo-500"></i>
+                                <div>
+                                    <a href="#" class="font-medium text-indigo-600 hover:underline">Intermediate CA - Identity</a>
+                                    <span class="ml-2 px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">Active</span>
+                                    <p class="text-xs text-gray-400">ECDSA P-256 | SHA-256 | Expire: 2030-06-15 | 62 certificats</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Intermediate 3 -->
+                        <div class="chain-line">
+                            <div class="flex items-center gap-3 py-2">
+                                <i class="bi bi-shield-check text-indigo-500"></i>
+                                <div>
+                                    <a href="#" class="font-medium text-indigo-600 hover:underline">Intermediate CA - Code Signing</a>
+                                    <span class="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded text-xs">Suspended</span>
+                                    <p class="text-xs text-gray-400">Ed25519 | Expire: 2028-12-01 | 12 certificats</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CA CREATE ==================== -->
+        <div id="page-ca-create" class="page-section fade-in">
+            <div class="bg-white border-b px-8 py-5">
+                <h2 class="text-2xl font-bold text-gray-800">Creer une autorite de certification</h2>
+                <p class="text-sm text-gray-500 mt-1">Configurer une nouvelle CA Root ou Intermediate</p>
+            </div>
+            <div class="p-8">
+                <div class="bg-white rounded-xl shadow-sm p-6 max-w-3xl">
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                            <select class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm">
+                                <option>Root CA</option>
+                                <option selected>Intermediate CA</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">CA Parente</label>
+                            <select class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm">
+                                <option>Groupe STI Root CA</option>
+                            </select>
+                        </div>
+                        <hr>
+                        <p class="text-sm font-semibold text-gray-700">Distinguished Name (DN)</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="block text-xs text-gray-500 mb-1">Common Name (CN)</label><input type="text" value="Intermediate CA - Services" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                            <div><label class="block text-xs text-gray-500 mb-1">Organization (O)</label><input type="text" value="Groupe STI" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                            <div><label class="block text-xs text-gray-500 mb-1">Organizational Unit (OU)</label><input type="text" value="PKI" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                            <div><label class="block text-xs text-gray-500 mb-1">Country (C)</label><input type="text" value="CA" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                            <div><label class="block text-xs text-gray-500 mb-1">State/Province (ST)</label><input type="text" value="Quebec" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                            <div><label class="block text-xs text-gray-500 mb-1">Locality (L)</label><input type="text" value="Montreal" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                        </div>
+                        <hr>
+                        <p class="text-sm font-semibold text-gray-700">Cryptographie</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="block text-xs text-gray-500 mb-1">Algorithme</label>
+                                <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                    <option>RSA 2048</option><option>RSA 4096</option><option selected>ECDSA P-256</option><option>ECDSA P-384</option><option>Ed25519</option>
+                                </select>
+                            </div>
+                            <div><label class="block text-xs text-gray-500 mb-1">Validite (jours)</label><input type="number" value="1825" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                            <div><label class="block text-xs text-gray-500 mb-1">Path Length Constraint</label><input type="number" value="0" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></div>
+                        </div>
+                        <div class="flex gap-3 pt-4">
+                            <button class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">Creer la CA</button>
+                            <button onclick="showPage('authorities')" class="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition text-sm">Annuler</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CA DETAIL ==================== -->
+        <div id="page-ca-detail" class="page-section fade-in">
+            <div class="bg-white border-b px-8 py-5">
+                <h2 class="text-2xl font-bold text-gray-800">Groupe STI Root CA</h2>
+                <div class="flex items-center gap-3 mt-2">
+                    <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium">Active</span>
+                    <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">Root CA</span>
+                    <span class="text-xs text-gray-400">UUID: 550e8400-e29b-41d4-a716-446655440000</span>
+                </div>
+            </div>
+            <div class="p-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white rounded-xl shadow-sm p-5 text-center">
+                        <p class="text-3xl font-bold text-blue-600">259</p>
+                        <p class="text-sm text-gray-500">Certificats emis</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-5 text-center">
+                        <p class="text-3xl font-bold text-green-600">247</p>
+                        <p class="text-sm text-gray-500">Actifs</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-5 text-center">
+                        <p class="text-3xl font-bold text-red-600">12</p>
+                        <p class="text-sm text-gray-500">Revoques</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="font-semibold text-gray-800 mb-4">Distinguished Name</h3>
+                        <dl class="space-y-2 text-sm">
+                            <div class="flex"><dt class="w-8 text-gray-400 font-medium">CN</dt><dd class="text-gray-800">Groupe STI Root CA</dd></div>
+                            <div class="flex"><dt class="w-8 text-gray-400 font-medium">O</dt><dd class="text-gray-800">Groupe STI Inc.</dd></div>
+                            <div class="flex"><dt class="w-8 text-gray-400 font-medium">OU</dt><dd class="text-gray-800">PKI Operations</dd></div>
+                            <div class="flex"><dt class="w-8 text-gray-400 font-medium">C</dt><dd class="text-gray-800">CA</dd></div>
+                            <div class="flex"><dt class="w-8 text-gray-400 font-medium">ST</dt><dd class="text-gray-800">Quebec</dd></div>
+                            <div class="flex"><dt class="w-8 text-gray-400 font-medium">L</dt><dd class="text-gray-800">Montreal</dd></div>
+                        </dl>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="font-semibold text-gray-800 mb-4">Details techniques</h3>
+                        <dl class="space-y-2 text-sm">
+                            <div class="flex justify-between"><dt class="text-gray-400">Algorithme</dt><dd class="font-mono">RSA-4096</dd></div>
+                            <div class="flex justify-between"><dt class="text-gray-400">Hash</dt><dd class="font-mono">SHA-256</dd></div>
+                            <div class="flex justify-between"><dt class="text-gray-400">Serial</dt><dd class="font-mono text-xs">01:AB:CD:EF:12:34</dd></div>
+                            <div class="flex justify-between"><dt class="text-gray-400">Emis le</dt><dd>2025-01-01</dd></div>
+                            <div class="flex justify-between"><dt class="text-gray-400">Expire le</dt><dd>2035-01-01</dd></div>
+                            <div class="flex justify-between"><dt class="text-gray-400">Key Usage</dt><dd>keyCertSign, cRLSign</dd></div>
+                            <div class="flex justify-between"><dt class="text-gray-400">Path Length</dt><dd>Unlimited</dd></div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CERTIFICATES ==================== -->
+        <div id="page-certificates" class="page-section fade-in">
+            <div class="bg-white border-b px-8 py-5">
+                <h2 class="text-2xl font-bold text-gray-800">Certificats</h2>
+                <p class="text-sm text-gray-500 mt-1">Gestion des certificats X.509 emis</p>
+            </div>
+            <div class="p-8">
+                <!-- Filters -->
+                <div class="bg-white rounded-xl shadow-sm p-4 mb-6 flex flex-wrap gap-3 items-center">
+                    <input type="text" placeholder="Rechercher par CN, serial..." class="border border-gray-300 rounded-lg px-3 py-2 text-sm flex-1 min-w-[200px]">
+                    <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                        <option>Tous les types</option><option>TLS Server</option><option>Client mTLS</option><option>S/MIME</option><option>Code Signing</option>
+                    </select>
+                    <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                        <option>Tous les statuts</option><option selected>Active</option><option>Revoked</option><option>Expired</option>
+                    </select>
+                    <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                        <option>Toutes les CA</option><option>Intermediate CA - TLS</option><option>Intermediate CA - Identity</option>
+                    </select>
+                </div>
+                <!-- Table -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50"><tr>
+                            <th class="px-6 py-3 text-left text-gray-500 font-medium">Sujet (CN)</th>
+                            <th class="px-6 py-3 text-left text-gray-500 font-medium">Serial</th>
+                            <th class="px-6 py-3 text-left text-gray-500 font-medium">Type</th>
+                            <th class="px-6 py-3 text-left text-gray-500 font-medium">CA</th>
+                            <th class="px-6 py-3 text-left text-gray-500 font-medium">Statut</th>
+                            <th class="px-6 py-3 text-left text-gray-500 font-medium">Expiration</th>
+                            <th class="px-6 py-3"></th>
+                        </tr></thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50 cursor-pointer" onclick="showPage('cert-detail')"><td class="px-6 py-3 font-medium">api.example.com</td><td class="px-6 py-3 font-mono text-xs text-gray-400">AB:12:CD:34</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">TLS Server</span></td><td class="px-6 py-3 text-gray-500">Int. CA - TLS</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">Active</span></td><td class="px-6 py-3">2027-03-15</td><td class="px-6 py-3 text-gray-400"><i class="bi bi-chevron-right"></i></td></tr>
+                            <tr class="hover:bg-gray-50 cursor-pointer"><td class="px-6 py-3 font-medium">*.internal.corp</td><td class="px-6 py-3 font-mono text-xs text-gray-400">EF:56:78:90</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">TLS Server</span></td><td class="px-6 py-3 text-gray-500">Int. CA - TLS</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">Active</span></td><td class="px-6 py-3">2026-04-12</td><td class="px-6 py-3 text-gray-400"><i class="bi bi-chevron-right"></i></td></tr>
+                            <tr class="hover:bg-gray-50 cursor-pointer"><td class="px-6 py-3 font-medium">bob@example.com</td><td class="px-6 py-3 font-mono text-xs text-gray-400">11:22:33:44</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">Client mTLS</span></td><td class="px-6 py-3 text-gray-500">Int. CA - Identity</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">Active</span></td><td class="px-6 py-3">2027-01-20</td><td class="px-6 py-3 text-gray-400"><i class="bi bi-chevron-right"></i></td></tr>
+                            <tr class="hover:bg-gray-50 cursor-pointer"><td class="px-6 py-3 font-medium">old-server.internal</td><td class="px-6 py-3 font-mono text-xs text-gray-400">AA:BB:CC:DD</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">TLS Server</span></td><td class="px-6 py-3 text-gray-500">Int. CA - TLS</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-red-100 text-red-700 rounded text-xs">Revoked</span></td><td class="px-6 py-3">2027-06-01</td><td class="px-6 py-3 text-gray-400"><i class="bi bi-chevron-right"></i></td></tr>
+                            <tr class="hover:bg-gray-50 cursor-pointer"><td class="px-6 py-3 font-medium">alice@example.com</td><td class="px-6 py-3 font-mono text-xs text-gray-400">55:66:77:88</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs">S/MIME</span></td><td class="px-6 py-3 text-gray-500">Int. CA - Identity</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">Active</span></td><td class="px-6 py-3">2026-04-18</td><td class="px-6 py-3 text-gray-400"><i class="bi bi-chevron-right"></i></td></tr>
+                        </tbody>
+                    </table>
+                    <div class="px-6 py-3 border-t bg-gray-50 text-sm text-gray-500 flex justify-between items-center">
+                        <span>Affichage 1-5 sur 247 certificats</span>
+                        <div class="flex gap-1"><button class="px-3 py-1 bg-blue-600 text-white rounded text-xs">1</button><button class="px-3 py-1 bg-white border rounded text-xs">2</button><button class="px-3 py-1 bg-white border rounded text-xs">3</button><button class="px-3 py-1 bg-white border rounded text-xs">...</button><button class="px-3 py-1 bg-white border rounded text-xs">50</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CERTIFICATE DETAIL ==================== -->
+        <div id="page-cert-detail" class="page-section fade-in">
+            <div class="bg-white border-b px-8 py-5">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">api.example.com</h2>
+                        <div class="flex items-center gap-3 mt-2">
+                            <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium">Active</span>
+                            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">TLS Server</span>
+                            <span class="text-xs text-gray-400 font-mono">Serial: AB:12:CD:34:EF:56:78:90</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm"><i class="bi bi-download"></i> Exporter</button>
+                        <button class="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition text-sm"><i class="bi bi-x-circle"></i> Revoquer</button>
+                    </div>
+                </div>
+            </div>
+            <div class="p-8">
+                <!-- Validity bar -->
+                <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-gray-500">Emis: 2026-03-15</span>
+                        <span class="text-gray-500">Expire: 2027-03-15</span>
+                    </div>
+                    <div class="w-full h-3 bg-gray-200 rounded-full"><div class="h-3 bg-green-500 rounded-full" style="width:4%"></div></div>
+                    <p class="text-xs text-gray-400 mt-2">4% ecoule — 351 jours restants</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="font-semibold text-gray-800 mb-4">Subject</h3>
+                        <dl class="space-y-2 text-sm">
+                            <div class="flex"><dt class="w-8 text-gray-400">CN</dt><dd>api.example.com</dd></div>
+                            <div class="flex"><dt class="w-8 text-gray-400">O</dt><dd>Example Corp</dd></div>
+                            <div class="flex"><dt class="w-8 text-gray-400">C</dt><dd>CA</dd></div>
+                        </dl>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="font-semibold text-gray-800 mb-4">Subject Alternative Names</h3>
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2 text-sm"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-mono">DNS</span> api.example.com</div>
+                            <div class="flex items-center gap-2 text-sm"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-mono">DNS</span> www.example.com</div>
+                            <div class="flex items-center gap-2 text-sm"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-mono">DNS</span> *.example.com</div>
+                            <div class="flex items-center gap-2 text-sm"><span class="px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-mono">IP</span> 192.168.1.100</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Chain -->
+                <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                    <h3 class="font-semibold text-gray-800 mb-4"><i class="bi bi-link-45deg"></i> Chaine de certification</h3>
+                    <div class="flex items-center gap-3 text-sm">
+                        <span class="px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg">api.example.com</span>
+                        <i class="bi bi-arrow-right text-gray-400"></i>
+                        <span class="px-3 py-1.5 bg-indigo-50 border border-indigo-200 rounded-lg">Intermediate CA - TLS</span>
+                        <i class="bi bi-arrow-right text-gray-400"></i>
+                        <span class="px-3 py-1.5 bg-gray-50 border border-gray-300 rounded-lg font-medium">Groupe STI Root CA</span>
+                    </div>
+                </div>
+                <!-- Extensions -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h3 class="font-semibold text-gray-800 mb-4">Extensions X.509</h3>
+                    <dl class="space-y-2 text-sm">
+                        <div class="flex justify-between"><dt class="text-gray-400">Key Usage</dt><dd class="font-mono text-xs">digitalSignature, keyEncipherment</dd></div>
+                        <div class="flex justify-between"><dt class="text-gray-400">Extended Key Usage</dt><dd class="font-mono text-xs">serverAuth</dd></div>
+                        <div class="flex justify-between"><dt class="text-gray-400">Basic Constraints</dt><dd class="font-mono text-xs">CA: FALSE</dd></div>
+                        <div class="flex justify-between"><dt class="text-gray-400">Authority Key ID</dt><dd class="font-mono text-xs">A1:B2:C3:D4:E5</dd></div>
+                        <div class="flex justify-between"><dt class="text-gray-400">Subject Key ID</dt><dd class="font-mono text-xs">F6:G7:H8:I9:J0</dd></div>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== KEYS ==================== -->
+        <div id="page-keys" class="page-section fade-in">
+            <div class="bg-white border-b px-8 py-5">
+                <h2 class="text-2xl font-bold text-gray-800">Cles cryptographiques</h2>
+                <p class="text-sm text-gray-500 mt-1">Gestion des cles privees et publiques</p>
+            </div>
+            <div class="p-8">
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-gray-500 font-medium">UUID</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Algorithme</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Statut</th><th class="px-6 py-3 text-left text-gray-500 font-medium">CA</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Utilisation</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Cree le</th></tr></thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3 font-mono text-xs">a1b2c3d4...</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">RSA-4096</span></td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">Active</span></td><td class="px-6 py-3">Root CA</td><td class="px-6 py-3 text-gray-500">CA Signing</td><td class="px-6 py-3 text-gray-400">2025-01-01</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3 font-mono text-xs">e5f6g7h8...</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-xs">ECDSA P-384</span></td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">Active</span></td><td class="px-6 py-3">Int. CA - TLS</td><td class="px-6 py-3 text-gray-500">CA Signing</td><td class="px-6 py-3 text-gray-400">2025-01-15</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3 font-mono text-xs">i9j0k1l2...</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-xs">ECDSA P-256</span></td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">Active</span></td><td class="px-6 py-3">Int. CA - Identity</td><td class="px-6 py-3 text-gray-500">CA Signing</td><td class="px-6 py-3 text-gray-400">2025-01-15</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3 font-mono text-xs">m3n4o5p6...</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs">Ed25519</span></td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded text-xs">Suspended</span></td><td class="px-6 py-3">Int. CA - Code</td><td class="px-6 py-3 text-gray-500">CA Signing</td><td class="px-6 py-3 text-gray-400">2025-02-01</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3 font-mono text-xs">q7r8s9t0...</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs">RSA-2048</span></td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-500 rounded text-xs">Rotated</span></td><td class="px-6 py-3">Root CA</td><td class="px-6 py-3 text-gray-500">CA Signing (ancien)</td><td class="px-6 py-3 text-gray-400">2020-01-01</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CSRs ==================== -->
+        <div id="page-csrs" class="page-section fade-in">
+            <div class="bg-white border-b px-8 py-5">
+                <h2 class="text-2xl font-bold text-gray-800">Demandes de signature (CSR)</h2>
+                <p class="text-sm text-gray-500 mt-1">Approuver ou rejeter les demandes de certificats</p>
+            </div>
+            <div class="p-8">
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-gray-500 font-medium">Sujet (CN)</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Type demande</th><th class="px-6 py-3 text-left text-gray-500 font-medium">CA cible</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Statut</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Soumis le</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Actions</th></tr></thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-3 font-medium">mail.example.com</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">TLS Server</span></td><td class="px-6 py-3 text-gray-500">Int. CA - TLS</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded text-xs">Pending</span></td><td class="px-6 py-3 text-gray-400">2026-03-28</td>
+                                <td class="px-6 py-3 flex gap-1"><button class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200"><i class="bi bi-check"></i> Approuver</button><button class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs hover:bg-red-200"><i class="bi bi-x"></i> Rejeter</button></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-3 font-medium">vpn-user-42@corp</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">Client mTLS</span></td><td class="px-6 py-3 text-gray-500">Int. CA - Identity</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded text-xs">Pending</span></td><td class="px-6 py-3 text-gray-400">2026-03-27</td>
+                                <td class="px-6 py-3 flex gap-1"><button class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200"><i class="bi bi-check"></i> Approuver</button><button class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs hover:bg-red-200"><i class="bi bi-x"></i> Rejeter</button></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-3 font-medium">dev.internal.corp</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">TLS Server</span></td><td class="px-6 py-3 text-gray-500">Int. CA - TLS</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">Approved</span></td><td class="px-6 py-3 text-gray-400">2026-03-25</td>
+                                <td class="px-6 py-3"><span class="text-xs text-gray-400">Certificat emis</span></td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-3 font-medium">suspicious-request</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">TLS Server</span></td><td class="px-6 py-3 text-gray-500">Int. CA - TLS</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-red-100 text-red-700 rounded text-xs">Rejected</span></td><td class="px-6 py-3 text-gray-400">2026-03-24</td>
+                                <td class="px-6 py-3"><span class="text-xs text-gray-400">Rejete par admin</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CRLs ==================== -->
+        <div id="page-crls" class="page-section fade-in">
+            <div class="bg-white border-b px-8 py-5">
+                <h2 class="text-2xl font-bold text-gray-800">Listes de revocation (CRL)</h2>
+                <p class="text-sm text-gray-500 mt-1">Generer et consulter les CRL par autorite</p>
+            </div>
+            <div class="p-8">
+                <!-- CRL per CA -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Intermediate CA - TLS</h4>
+                                <p class="text-xs text-gray-400">Derniere CRL: 2026-03-28 14:30</p>
+                            </div>
+                            <button class="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs hover:bg-blue-700"><i class="bi bi-arrow-repeat"></i> Generer CRL</button>
+                        </div>
+                        <div class="text-sm space-y-1">
+                            <div class="flex justify-between"><span class="text-gray-500">Entrees</span><span class="font-medium">8 certificats revoques</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Prochaine mise a jour</span><span>2026-04-04</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Algorithme</span><span class="font-mono text-xs">ECDSA-SHA384</span></div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Intermediate CA - Identity</h4>
+                                <p class="text-xs text-gray-400">Derniere CRL: 2026-03-27 09:00</p>
+                            </div>
+                            <button class="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs hover:bg-blue-700"><i class="bi bi-arrow-repeat"></i> Generer CRL</button>
+                        </div>
+                        <div class="text-sm space-y-1">
+                            <div class="flex justify-between"><span class="text-gray-500">Entrees</span><span class="font-medium">4 certificats revoques</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Prochaine mise a jour</span><span>2026-04-03</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Algorithme</span><span class="font-mono text-xs">ECDSA-SHA256</span></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- CRL History -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b"><h3 class="font-semibold text-gray-800">Historique des CRL</h3></div>
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-gray-500 font-medium">CA</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Type</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Numero</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Entrees</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Generee le</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Expire le</th></tr></thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3">Int. CA - TLS</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">Full</span></td><td class="px-6 py-3 font-mono text-xs">#42</td><td class="px-6 py-3">8</td><td class="px-6 py-3">2026-03-28 14:30</td><td class="px-6 py-3">2026-04-04</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3">Int. CA - TLS</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded text-xs">Delta</span></td><td class="px-6 py-3 font-mono text-xs">#41</td><td class="px-6 py-3">1</td><td class="px-6 py-3">2026-03-27 14:30</td><td class="px-6 py-3">2026-03-28</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3">Int. CA - Identity</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">Full</span></td><td class="px-6 py-3 font-mono text-xs">#15</td><td class="px-6 py-3">4</td><td class="px-6 py-3">2026-03-27 09:00</td><td class="px-6 py-3">2026-04-03</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== AUDIT LOG ==================== -->
+        <div id="page-audit" class="page-section fade-in">
+            <div class="bg-white border-b px-8 py-5">
+                <h2 class="text-2xl font-bold text-gray-800">Journal d'audit</h2>
+                <p class="text-sm text-gray-500 mt-1">Historique complet de toutes les actions PKI</p>
+            </div>
+            <div class="p-8">
+                <!-- Filters -->
+                <div class="bg-white rounded-xl shadow-sm p-4 mb-6 flex flex-wrap gap-3 items-center">
+                    <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                        <option>Toutes les actions</option><option>certificate.issued</option><option>certificate.revoked</option><option>csr.approved</option><option>csr.rejected</option><option>crl.generated</option><option>key.generated</option><option>ca.created</option>
+                    </select>
+                    <input type="date" value="2026-03-01" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                    <input type="date" value="2026-03-29" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">Filtrer</button>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-gray-500 font-medium">Horodatage</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Action</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Sujet</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Acteur</th><th class="px-6 py-3 text-left text-gray-500 font-medium">IP</th><th class="px-6 py-3 text-left text-gray-500 font-medium">Details</th></tr></thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3 text-gray-400 text-xs">2026-03-29 09:15:23</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs">certificate.issued</span></td><td class="px-6 py-3">webapp.corp.local</td><td class="px-6 py-3">admin</td><td class="px-6 py-3 font-mono text-xs text-gray-400">192.168.1.50</td><td class="px-6 py-3 text-xs text-gray-400">TLS Server, 365 days, ECDSA</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3 text-gray-400 text-xs">2026-03-29 04:22:10</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-red-100 text-red-700 rounded text-xs">certificate.revoked</span></td><td class="px-6 py-3">old-server.internal</td><td class="px-6 py-3">admin</td><td class="px-6 py-3 font-mono text-xs text-gray-400">192.168.1.50</td><td class="px-6 py-3 text-xs text-gray-400">Reason: keyCompromise</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3 text-gray-400 text-xs">2026-03-28 16:45:00</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded text-xs">crl.generated</span></td><td class="px-6 py-3">Int. CA - TLS</td><td class="px-6 py-3">system</td><td class="px-6 py-3 font-mono text-xs text-gray-400">127.0.0.1</td><td class="px-6 py-3 text-xs text-gray-400">CRL #42, 8 entries</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3 text-gray-400 text-xs">2026-03-28 14:12:33</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">csr.approved</span></td><td class="px-6 py-3">mail.example.com</td><td class="px-6 py-3">admin</td><td class="px-6 py-3 font-mono text-xs text-gray-400">192.168.1.50</td><td class="px-6 py-3 text-xs text-gray-400">CSR approved, cert pending</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3 text-gray-400 text-xs">2026-03-27 10:05:17</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-red-100 text-red-700 rounded text-xs">csr.rejected</span></td><td class="px-6 py-3">suspicious-request</td><td class="px-6 py-3">admin</td><td class="px-6 py-3 font-mono text-xs text-gray-400">192.168.1.50</td><td class="px-6 py-3 text-xs text-gray-400">Invalid organization</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-3 text-gray-400 text-xs">2026-03-25 08:00:00</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs">key.generated</span></td><td class="px-6 py-3">ECDSA P-256</td><td class="px-6 py-3">admin</td><td class="px-6 py-3 font-mono text-xs text-gray-400">192.168.1.50</td><td class="px-6 py-3 text-xs text-gray-400">For new service cert</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="px-6 py-3 border-t bg-gray-50 text-sm text-gray-500 flex justify-between items-center">
+                        <span>Affichage 1-6 sur 1,247 entrees</span>
+                        <div class="flex gap-1"><button class="px-3 py-1 bg-blue-600 text-white rounded text-xs">1</button><button class="px-3 py-1 bg-white border rounded text-xs">2</button><button class="px-3 py-1 bg-white border rounded text-xs">3</button><button class="px-3 py-1 bg-white border rounded text-xs">...</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+function showPage(page) {
+    document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.sidebar a').forEach(el => el.classList.remove('active'));
+
+    const pageEl = document.getElementById('page-' + page);
+    if (pageEl) {
+        pageEl.classList.add('active');
+    }
+
+    const navMap = {
+        'dashboard': 'nav-dashboard',
+        'authorities': 'nav-authorities',
+        'ca-create': 'nav-authorities',
+        'ca-detail': 'nav-authorities',
+        'certificates': 'nav-certificates',
+        'cert-detail': 'nav-certificates',
+        'keys': 'nav-keys',
+        'csrs': 'nav-csrs',
+        'crls': 'nav-crls',
+        'audit': 'nav-audit'
+    };
+
+    const navId = navMap[page];
+    if (navId) {
+        document.getElementById(navId).classList.add('active');
+    }
+}
+</script>
+</body>
+</html>
